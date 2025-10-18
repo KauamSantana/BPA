@@ -1,7 +1,9 @@
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { authService } from '../services/authService';
+import imagemLogin from "../assets/imagem_login.png";
 import './Login.css';
+import '../index.css'
 
 function Login() {
   // Mantive “email” para não quebrar o backend, mas rotulei como “Usuário”
@@ -41,7 +43,9 @@ function Login() {
             <div className="login-box">
               <div className="login-intro">
                 <h2>Fazer login</h2>
-                <Link to="/register">Não possui uma conta? Crie uma.</Link>
+              </div>
+              <div className='criar-conta'>
+                Não possui uma conta? <Link to="/register">Crie uma.</Link>
               </div>
 
               <form onSubmit={handleLogin} className="login-form" noValidate>
@@ -91,35 +95,13 @@ function Login() {
           </div>
         </div>
 
-        {/* Coluna direita - Card visual */}
-        <div className="login-right">
-          <div className="visual-card">
-            <div className="visual-frame">
-              {/* Top recortado/branco pode ser feito via SVG; aqui mantemos simples */}
-              <div className="visual-grid">
-                <div className="photo">
-                  <img src="https://placehold.co/600x400" alt="Profissional 1" />
-                </div>
-                <div className="photo">
-                  <img src="https://placehold.co/600x400" alt="Profissional 2" />
-                </div>
-                <div className="photo">
-                  <img src="https://placehold.co/600x400" alt="Profissional 3" />
-                </div>
-                <div className="photo">
-                  <img src="https://placehold.co/600x400" alt="Profissional 4" />
-                </div>
-              </div>
+  
 
-              <div className="visual-footer">
-                <div className="visual-logo">🍽️</div>
-                <div className="visual-name">BPA Digital</div>
+                 <div className="photo">
+              <img src={imagemLogin}/>
+              </div>
               </div>
             </div>
-          </div>
-        </div>
-      </div>
-    </div>
   );
 }
 

@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { authService } from '../services/authService';
-import './Login.css'; // Reutilizando os mesmos estilos do Login
+import './Login.css'; 
 
 function Register() {
   const [nome, setNome] = useState('');
@@ -31,9 +31,7 @@ function Register() {
   return (
     <div className="login-page">
       <div className="login-container">
-        <div className="login-card">
           <div className="login-header">
-            <div className="login-logo">✨</div>
             <h1 className="login-title">Criar Conta</h1>
             <p className="login-subtitle">Bem-vindo ao BPA Digital</p>
           </div>
@@ -98,11 +96,11 @@ function Register() {
           )}
 
           <div className="login-footer">
-            Já tem conta? <a href="/">Fazer login</a>
+            Já tem conta? <a href="/">Fazer login </a> 
           </div>
         </div>
       </div>
-    </div>
+
   );
 }
 

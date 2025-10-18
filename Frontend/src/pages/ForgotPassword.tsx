@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { authService } from '../services/authService';
 import './Login.css';
+import imagemLogin from '../assets/imagem_login.png'
 
 function ForgotPassword() {
   const [email, setEmail] = useState('');
@@ -29,6 +30,11 @@ function ForgotPassword() {
 
   return (
     <div className="login-page">
+        <div style={{ textAlign: 'center', marginTop: '1rem' }}>
+                    <Link to="/login" style={{ color: '#05A672', textDecoration: 'none', padding: 26}}>
+                      ← Voltar para Login
+                    </Link>
+                  </div>
       <div className="login-shell">
         <div className="login-left">
           <div className="login-panel">
@@ -40,6 +46,8 @@ function ForgotPassword() {
             <div className="login-box">
               <div className="login-intro">
                 <h2>Esqueci minha senha</h2>
+              </div>
+              <div>
                 <p style={{ color: '#666', marginTop: '0.5rem' }}>
                   Digite seu email para receber instruções de recuperação
                 </p>
@@ -47,9 +55,9 @@ function ForgotPassword() {
 
               {success ? (
                 <div className="success-message">
-                  <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>✅</div>
+                  <div style={{ fontSize: '3rem', marginBottom: '1rem' }}></div>
                   <p style={{ marginBottom: '1.5rem' }}>{message}</p>
-                  <Link to="/login" className="login-button" style={{ textDecoration: 'none', display: 'block', textAlign: 'center' }}>
+                  <Link to="/login" className="login-button" style={{ textDecoration: 'none', display: 'block', textAlign: 'center', justifyContent: 'center' }}>
                     Voltar para Login
                   </Link>
                 </div>
@@ -78,44 +86,20 @@ function ForgotPassword() {
                     {loading ? 'Enviando...' : 'Enviar Instruções'}
                   </button>
 
-                  <div style={{ textAlign: 'center', marginTop: '1rem' }}>
-                    <Link to="/login" style={{ color: '#667eea', textDecoration: 'none' }}>
-                      ← Voltar para Login
-                    </Link>
-                  </div>
+                
                 </form>
               )}
             </div>
           </div>
         </div>
 
-        <div className="login-right">
-          <div className="visual-card">
-            <div className="visual-frame">
-              <div className="visual-grid">
-                <div className="photo">
-                  <img src="https://placehold.co/600x400" alt="Segurança 1" />
-                </div>
-                <div className="photo">
-                  <img src="https://placehold.co/600x400" alt="Segurança 2" />
-                </div>
-                <div className="photo">
-                  <img src="https://placehold.co/600x400" alt="Segurança 3" />
-                </div>
-                <div className="photo">
-                  <img src="https://placehold.co/600x400" alt="Segurança 4" />
-                </div>
-              </div>
-
-              <div className="visual-footer">
-                <div className="visual-logo">🔐</div>
-                <div className="visual-name">Recuperação Segura</div>
+        
+                  <div className="photo">
+              <img src={imagemLogin}/>
               </div>
             </div>
           </div>
-        </div>
-      </div>
-    </div>
+    
   );
 }
 

@@ -50,6 +50,7 @@
   font-weight: 800;
   letter-spacing: -0.02em;
   color: var(--brand);
+  padding-left: 28px;  
 }
 
 .brand-sub {
@@ -58,14 +59,12 @@
   line-height: 1.1;
   font-weight: 700;
   color: var(--brand);
+  padding-left: 28px;
 }
 
 /* Box de login */
 .login-box {
   margin-top: 28px;
-  background: var(--surface);
-  border-radius: var(--radius);
-  box-shadow: var(--shadow-lg);
   padding: 28px;
 }
 
@@ -74,7 +73,7 @@
   display: flex;
   align-items: baseline;
   gap: 12px;
-  margin-bottom: 18px;
+  margin-bottom: 1px;
 }
 
 .login-intro h2 {
@@ -89,8 +88,23 @@
   text-decoration: underline;
 }
 
+.criar-conta {
+  color: #000;
+}
+
+.criar-conta a{
+  color: #05A672;
+
+}
+
+.criar-conta a:hover{
+  color: #055c3f;
+      transition: 1s;
+
+}
+
 .login-form {
-  margin-top: 6px;
+  margin-top: 16px;
 }
 
 .input-group {
@@ -226,7 +240,6 @@
   overflow: hidden;
 }
 
-/* Moldura/tema verde com cantos arredondados grandes */
 .visual-frame {
   background: var(--brand);
   border-radius: 24px;
@@ -240,53 +253,17 @@
   display: none;
 }
 
-/* Grade de imagens (use suas próprias imagens; abaixo placeholders) */
-.visual-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 12px;
-  margin-top: 8px;
+/* Imagem */
+.photo img {
+  margin-left: 150px;
+  background-size: cover;
+  background-position: center;
+  width: 80%;
+  height: 90%;
+  border-top-right-radius: 20px;
+  border-bottom-right-radius: 20px;
 }
 
-.visual-grid .photo {
-  background: #e2e8f0;
-  border-radius: 14px;
-  height: 170px;
-  overflow: hidden;
-}
-
-.visual-grid .photo img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-/* Logo no canto inferior direito do card */
-.visual-footer {
-  position: absolute;
-  right: 18px;
-  bottom: 16px;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-.visual-logo {
-  width: 44px;
-  height: 44px;
-  border-radius: 12px;
-  background: #d1fae5;
-  display: grid;
-  place-items: center;
-  font-size: 22px;
-  color: var(--brand-dark);
-  font-weight: 800;
-}
-
-.visual-name {
-  color: #e6fff4;
-  font-weight: 700;
-}
 
 /* Ajustes responsivos */
 @media (max-width: 899px) {
@@ -304,4 +281,11 @@
   .login-box {
     padding: 20px;
   }
+
+  .login-footer a{
+    color: #05A672;
+    text-decoration: none;
+  }
+
+ 
 }
