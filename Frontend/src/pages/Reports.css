@@ -1,0 +1,178 @@
+/* src/pages/Reports.css */
+
+.reports-page {
+    min-height: 100vh;
+    background-color: var(--bg-gray); /* Fundo cinza suave */
+}
+
+.reports-container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: var(--spacing-2xl) var(--spacing-xl);
+}
+
+.reports-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--spacing-2xl);
+    flex-wrap: wrap;
+    gap: var(--spacing-lg);
+}
+
+.reports-title-group {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-md);
+}
+
+.reports-title {
+    font-size: var(--font-size-xl);
+    font-weight: 600;
+    color: var(--text-dark);
+}
+
+.reports-header-link {
+    text-decoration: none;
+    color: var(--primary-purple);
+    font-weight: 500;
+    transition: color 0.2s;
+    font-size: var(--font-size-base);
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+}
+
+.reports-header-link:hover {
+    color: var(--secondary-purple);
+}
+
+.search-bar {
+    display: flex;
+    gap: var(--spacing-md);
+    margin-bottom: var(--spacing-xl);
+}
+
+.search-bar input {
+    flex: 1;
+    max-width: 400px;
+    padding: var(--spacing-md);
+    border: 2px solid var(--gray-200);
+    border-radius: var(--radius-md);
+    font-size: var(--font-size-base);
+    transition: all 0.2s ease;
+}
+
+.search-bar input:focus {
+    outline: none;
+    border-color: var(--primary-purple);
+    box-shadow: 0 0 0 3px var(--light-purple);
+}
+
+/* Card do Relatório */
+.report-card {
+    background: white;
+    border-radius: var(--radius-lg);
+    padding: var(--spacing-lg) var(--spacing-xl);
+    box-shadow: var(--shadow-sm);
+    border: 1px solid var(--border-gray);
+    margin-bottom: var(--spacing-md);
+    cursor: pointer;
+    transition: box-shadow 0.2s ease, transform 0.2s ease;
+}
+
+.report-card:hover {
+    box-shadow: var(--shadow-md);
+    transform: translateY(-2px);
+}
+
+.report-card-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: var(--spacing-lg);
+}
+
+.report-details h3 {
+    margin: 0 0 var(--spacing-sm) 0;
+    font-size: var(--font-size-lg);
+    color: var(--text-dark);
+}
+
+.report-details p {
+    margin: 4px 0;
+    color: var(--gray-500);
+    font-size: var(--font-size-sm);
+}
+
+.report-actions {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-md);
+    white-space: nowrap;
+}
+
+/* Status Badge */
+.status-badge {
+    padding: 6px 12px;
+    border-radius: var(--radius-full);
+    font-size: var(--font-size-sm);
+    font-weight: 600;
+    text-transform: capitalize;
+}
+
+.status-badge.status-concluido {
+    background: var(--success-color); /* Verde */
+    color: white;
+}
+
+.status-badge.status-andamento {
+    background: var(--warning-color); /* Amarelo */
+    color: white;
+}
+
+/* Empty State - Reutiliza do Clients.css, mas garantindo a importação ou a presença dele */
+.empty-state {
+    text-align: center;
+    padding: var(--spacing-2xl);
+    background: white;
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-md);
+}
+
+.empty-state-icon {
+    font-size: 4rem;
+    margin-bottom: var(--spacing-lg);
+}
+
+.empty-state-title {
+    font-size: var(--font-size-xl);
+    font-weight: 600;
+    color: var(--primary-purple);
+    margin-bottom: var(--spacing-sm);
+}
+
+.empty-state-description {
+    font-size: var(--font-size-base);
+    color: var(--gray-500);
+    margin-bottom: var(--spacing-xl);
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+    .report-card-content {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    
+    .report-actions {
+        margin-top: var(--spacing-md);
+        flex-wrap: wrap;
+    }
+
+    .reports-header {
+        flex-direction: column;
+        align-items: stretch;
+    }
+}

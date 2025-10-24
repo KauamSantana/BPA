@@ -1,0 +1,188 @@
+/* src/styles/ClientForm.css */
+
+.client-form-page {
+    /* Define o layout principal da página */
+    display: flex;
+    flex-direction: column;
+    padding: var(--spacing-lg); /* 1.5rem */
+    background-color: var(--bg-gray);
+    min-height: 100vh;
+}
+
+/* Estilo para o container principal do formulário */
+.client-form-container {
+    background-color: white;
+    padding: var(--spacing-xl); /* 2rem */
+    border-radius: var(--radius-lg); /* 0.75rem */
+    box-shadow: var(--shadow-lg); /* Sombra mais destacada */
+    max-width: 800px; /* Limita a largura para centralizar melhor */
+    width: 100%;
+    margin: var(--spacing-xl) auto; /* Centraliza vertical e horizontalmente */
+}
+
+/* Título e Botão Voltar */
+.client-form-header {
+    margin-bottom: var(--spacing-lg);
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-md);
+}
+
+.client-form-header-link {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    color: var(--primary-purple);
+    font-size: var(--font-size-lg);
+    font-weight: 500;
+    text-decoration: none;
+    transition: color 0.2s ease;
+}
+
+.client-form-header-link:hover {
+    color: var(--secondary-purple);
+}
+
+.client-form-header h1 {
+    font-size: var(--font-size-2xl); /* 1.5rem */
+    color: var(--text-dark);
+}
+
+/* Estilo para a seção de upload da Logo */
+.logo-upload-section {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-lg);
+    margin-bottom: var(--spacing-xl);
+}
+
+.logo-icon-container {
+    width: 100px;
+    height: 100px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 2px dashed var(--gray-300);
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    transition: border-color 0.2s ease, background-color 0.2s ease;
+    background-color: var(--gray-50);
+}
+
+.logo-icon-container:hover {
+    border-color: var(--primary-purple);
+    background-color: var(--light-purple);
+}
+
+.logo-icon-container input[type="file"] {
+    display: none; /* Esconde o input file padrão */
+}
+
+/* Ícone de placeholder para a logo */
+.logo-icon {
+    font-size: 3rem;
+    color: var(--gray-400);
+}
+
+.logo-preview {
+    width: 100px;
+    height: 100px;
+    object-fit: contain;
+    border-radius: var(--radius-md);
+    border: 1px solid var(--border-gray);
+}
+
+/* Estilização dos campos do formulário */
+.form-grid-2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--spacing-lg);
+    margin-bottom: var(--spacing-lg);
+}
+
+.form-grid-3 {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: var(--spacing-lg);
+    margin-bottom: var(--spacing-lg);
+}
+
+/* Garante que os campos de endereço preenchidos pelo CEP não sejam editáveis */
+.input-disabled {
+    background-color: var(--gray-50);
+    cursor: not-allowed;
+}
+
+/* Estilização para o campo CEP com loading */
+.cep-label {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+}
+
+.cep-loading-text {
+    color: var(--primary-purple);
+    font-weight: 500;
+}
+
+/* Título da Seção de Endereço */
+.address-title {
+    font-size: var(--font-size-xl); /* 1.25rem */
+    color: var(--primary-purple);
+    margin-top: var(--spacing-xl);
+    margin-bottom: var(--spacing-lg);
+    border-bottom: 1px solid var(--border-gray);
+    padding-bottom: var(--spacing-sm);
+}
+
+/* Estilização dos botões de ação */
+.form-actions {
+    display: flex;
+    justify-content: flex-end; /* Alinha os botões à direita */
+    gap: var(--spacing-md);
+    margin-top: var(--spacing-xl);
+}
+
+/* Mensagem de erro */
+.error-message {
+    color: var(--danger-color);
+    margin-bottom: var(--spacing-md);
+    text-align: right;
+}
+
+/* Utilitário para campos de texto em linha, como Inscrição Estadual e Municipal */
+.input-row {
+    display: flex;
+    gap: var(--spacing-lg);
+    /* Ajuste para alinhar Status e Nome Fantasia */
+    margin-bottom: var(--spacing-lg);
+}
+
+/* Responsividade */
+@media (max-width: 600px) {
+    .client-form-container {
+        padding: var(--spacing-lg);
+    }
+
+    .form-grid-2,
+    .form-grid-3 {
+        grid-template-columns: 1fr;
+    }
+
+    .logo-upload-section {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .input-row {
+        flex-direction: column;
+    }
+
+    .form-actions {
+        flex-direction: column-reverse; /* Inverte a ordem para 'Salvar' ficar por último */
+    }
+
+    .btn {
+        width: 100%;
+    }
+}

@@ -1,0 +1,161 @@
+/* src/pages/ReportForm.css */
+
+/* Utiliza a estrutura base de ClientForm.css */
+.report-form-page {
+    /* Define o layout principal da página */
+    display: flex;
+    flex-direction: column;
+    padding: var(--spacing-lg); /* 1.5rem */
+    background-color: var(--bg-gray);
+    min-height: 100vh;
+}
+
+/* Estilo para o container principal do formulário */
+.report-form-container {
+    background-color: white;
+    padding: var(--spacing-xl); /* 2rem */
+    border-radius: var(--radius-lg); /* 0.75rem */
+    box-shadow: var(--shadow-lg); /* Sombra mais destacada */
+    max-width: 800px; /* Limita a largura para centralizar melhor */
+    width: 100%;
+    margin: var(--spacing-xl) auto; /* Centraliza vertical e horizontalmente */
+}
+
+/* Título e Botão Voltar */
+.report-form-header {
+    margin-bottom: var(--spacing-lg);
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-md);
+}
+
+.report-form-header-link {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    color: var(--primary-purple);
+    font-size: var(--font-size-lg);
+    font-weight: 500;
+    text-decoration: none;
+    transition: color 0.2s ease;
+}
+
+.report-form-header-link:hover {
+    color: var(--secondary-purple);
+}
+
+.report-form-header h1 {
+    font-size: var(--font-size-2xl); /* 1.5rem */
+    color: var(--text-dark);
+}
+
+/* Estilização dos grupos de input */
+.input-group {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: var(--spacing-lg); /* Espaçamento entre os grupos */
+}
+
+.input-group label {
+    font-weight: 600;
+    margin-bottom: var(--spacing-xs);
+    font-size: var(--font-size-sm);
+    color: var(--text-dark);
+}
+
+/* Ajusta o grid para 2 colunas */
+.form-grid-2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--spacing-lg);
+    margin-bottom: var(--spacing-lg);
+}
+
+/* Campos de input, select e textarea */
+.input-group input[type="text"],
+.input-group select,
+.input-group textarea {
+    padding: var(--spacing-sm); /* 0.5rem */
+    border: 1px solid var(--border-gray);
+    border-radius: var(--radius-md);
+    font-size: var(--font-size-base);
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    width: 100%; /* Garante que ocupem 100% da coluna do grid */
+}
+
+.input-group input[type="text"]:focus,
+.input-group select:focus,
+.input-group textarea:focus {
+    border-color: var(--primary-purple);
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(123, 104, 184, 0.2); /* Sombra suave do roxo */
+}
+
+/* Estilização dos botões de ação */
+.form-actions {
+    display: flex;
+    justify-content: flex-end; /* Alinha os botões à direita */
+    gap: var(--spacing-md);
+    margin-top: var(--spacing-xl);
+}
+
+.btn {
+    padding: var(--spacing-sm) var(--spacing-lg); /* 0.5rem 1.5rem */
+    border-radius: var(--radius-md);
+    font-weight: 600;
+    cursor: pointer;
+    transition: opacity 0.2s ease, background-color 0.2s ease;
+    border: none;
+}
+
+.btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+/* Botão INICIAR (Success) */
+.btn-success {
+    background-color: var(--success-color);
+    color: white;
+}
+
+.btn-success:hover:not(:disabled) {
+    background-color: #21964c; /* Tom mais escuro */
+}
+
+/* Botão VOLTAR (Secondary) */
+.btn-secondary {
+    background-color: var(--gray-100);
+    color: var(--text-dark);
+    border: 1px solid var(--border-gray);
+}
+
+.btn-secondary:hover:not(:disabled) {
+    background-color: var(--gray-200);
+}
+
+/* Mensagem de erro */
+.error-message {
+    color: var(--danger-color);
+    margin-bottom: var(--spacing-md);
+    text-align: right;
+}
+
+/* Responsividade */
+@media (max-width: 600px) {
+    .report-form-container {
+        padding: var(--spacing-lg);
+    }
+
+    .form-grid-2 {
+        grid-template-columns: 1fr;
+    }
+
+    .form-actions {
+        flex-direction: column-reverse; /* Inverte a ordem para 'INICIAR' ficar por último */
+    }
+
+    .btn {
+        width: 100%;
+    }
+}
