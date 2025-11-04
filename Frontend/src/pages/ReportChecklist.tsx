@@ -241,7 +241,7 @@ function ReportChecklist() {
                 </button>
                 <button
                   onClick={() => !isFinalized && handleResponseChange(item.id, 'na')}
-                  className={`btn ${item.resposta === 'na' ? 'btn-secondary' : 'btn-secondary'}`}
+                  className={`btn ${item.resposta === 'na' ? 'btn-warning' : 'btn-secondary'}`}
                   disabled={isFinalized}
                 >
                   N/A

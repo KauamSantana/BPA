@@ -8,6 +8,9 @@ function Register() {
   const [nome, setNome] = useState('');
   const [email, setEmail] = useState('');
   const [senha, setSenha] = useState('');
+  const [confirmarSenha, setConfirmarSenha] = useState('');
+  const [mostrarSenha, setMostrarSenha] = useState(false);
+  const [mostrarConfirmarSenha, setMostrarConfirmarSenha] = useState(false);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const { success, error: toastError } = useToast();
@@ -44,6 +47,11 @@ function Register() {
     }
     if (senhaTrim.length < 6) {
       toastError('A senha deve ter no mínimo 6 caracteres.');
+      setLoading(false);
+      return;
+    }
+    if (senhaTrim !== confirmarSenha.trim()) {
+      toastError('As senhas não coincidem.');
       setLoading(false);
       return;
     }
@@ -108,14 +116,66 @@ function Register() {
 
           <div className="input-group">
             <label htmlFor="senha">Senha</label>
-            <input
-              id="senha"
-              type="password"
-              value={senha}
-              onChange={(e) => setSenha(e.target.value)}
-              placeholder="Mínimo 6 caracteres"
-              autoComplete="new-password"
-            />
+            <div style={{ position: 'relative' }}>
+              <input
+                id="senha"
+                type={mostrarSenha ? 'text' : 'password'}
+                value={senha}
+                onChange={(e) => setSenha(e.target.value)}
+                placeholder="Mínimo 6 caracteres"
+                autoComplete="new-password"
+                style={{ paddingRight: '40px' }}
+              />
+              <button
+                type="button"
+                onClick={() => setMostrarSenha(!mostrarSenha)}
+                style={{
+                  position: 'absolute',
+                  right: '10px',
+                  top: '50%',
+                  transform: 'translateY(-50%)',
+                  background: 'none',
+                  border: 'none',
+                  cursor: 'pointer',
+                  fontSize: '1.2rem',
+                }}
+                aria-label={mostrarSenha ? 'Ocultar senha' : 'Mostrar senha'}
+              >
+                {mostrarSenha ? '🙈' : '👁️'}
+              </button>
+            </div>
+          </div>
+
+          <div className="input-group">
+            <label htmlFor="confirmarSenha">Confirmar Senha</label>
+            <div style={{ position: 'relative' }}>
+              <input
+                id="confirmarSenha"
+                type={mostrarConfirmarSenha ? 'text' : 'password'}
+                value={confirmarSenha}
+                onChange={(e) => setConfirmarSenha(e.target.value)}
+                placeholder="Digite a senha novamente"
+                autoComplete="new-password"
+                style={{ paddingRight: '40px' }}
+              />
+              <button
+                type="button"
+                onClick={() => setMostrarConfirmarSenha(!mostrarConfirmarSenha)}
+                style={{
+                  position: 'absolute',
+                  right: '10px',
+                  top: '50%',
+                  transform: 'translateY(-50%)',
+                  background: 'none',
+                  border: 'none',
+                  cursor: 'pointer',
+                  fontSize: '1.2rem',
+                }}
+                aria-label={mostrarConfirmarSenha ? 'Ocultar senha' : 'Mostrar senha'}
+              >
+                {mostrarConfirmarSenha ? '🙈' : '👁️'}
+              </button>
+            </div>
           </div>
 
           <button

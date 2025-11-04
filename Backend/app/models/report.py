@@ -23,6 +23,7 @@ class Report(Base):
     categoria = Column(String(100), nullable=True)
     responsavel_inspecao_id = Column(Integer, ForeignKey("users.id"), nullable=False)
     status = Column(SQLEnum(ReportStatus), default=ReportStatus.EM_ANDAMENTO, nullable=False)
+    data_agendada = Column(DateTime(timezone=True), nullable=True)  # Data agendada para inspeção
     
     criado_em = Column(DateTime(timezone=True), server_default=func.now())
     finalizado_em = Column(DateTime(timezone=True), nullable=True)

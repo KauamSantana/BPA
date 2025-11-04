@@ -5,7 +5,7 @@ from sqlalchemy.orm import Session
 
 from app.database import get_db
 from app.models import User
-from app.schemas import UserCreate, UserResponse, UserLogin, Token
+from app.schemas import UserCreate, UserResponse, UserLogin, Token, UserSimplified
 from app.auth import (
     get_password_hash,
     authenticate_user,
@@ -14,6 +14,7 @@ from app.auth import (
     get_current_user,
 )
 from app.models import Client, Report
+from typing import List
 
 router = APIRouter(prefix="/auth", tags=["Autenticação"])
 
@@ -31,11 +32,22 @@ def register(user_data: UserCreate, db: Session = Depends(get_db)):
             detail="Email já cadastrado"
         )
     
+    # Verifica se o superior existe (se especificado)
+    if user_data.superior_id:
+        superior = db.query(User).filter(User.id == user_data.superior_id).first()
+        if not superior:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="Superior não encontrado"
+            )
+    
     # Cria novo usuário
     new_user = User(
         nome=user_data.nome,
         email=user_data.email,
-        senha_hash=get_password_hash(user_data.senha)
+        senha_hash=get_password_hash(user_data.senha),
+        role=user_data.role,
+        superior_id=user_data.superior_id
     )
     
     db.add(new_user)
@@ -135,3 +147,31 @@ def get_dashboard_stats(
         "total_clients": total_clients,
         "total_reports": total_reports
     }
+
+
+@router.get("/users", response_model=List[UserSimplified])
+def list_all_users(
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    """
+    Lista todos os usuários do sistema
+    """
+    users = db.query(User).all()
+    return users
+
+
+@router.get("/users/subordinados", response_model=List[UserSimplified])
+def list_subordinates(
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    """
+    Lista os subordinados do usuário logado (incluindo ele mesmo)
+    """
+    # Busca todos os usuários que têm este usuário como superior, mais ele mesmo
+    subordinados = db.query(User).filter(
+        (User.superior_id == current_user.id) | (User.id == current_user.id)
+    ).all()
+    
+    return subordinados

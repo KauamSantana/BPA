@@ -9,6 +9,7 @@ import "../index.css";
 function Login() {
   const [email, setEmail] = useState("");
   const [senha, setSenha] = useState("");
+  const [mostrarSenha, setMostrarSenha] = useState(false);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const { success, error: toastError } = useToast();
@@ -112,15 +113,35 @@ function Login() {
 
                 <div className="input-group">
                   <label htmlFor="senha">Senha</label>
-                  <input
-                    id="senha"
-                    type="password"
-                    value={senha}
-                    onChange={(e) => setSenha(e.target.value)}
-                    placeholder="••••••••"
-                    autoComplete="current-password"
-                    required
-                  />
+                  <div style={{ position: 'relative' }}>
+                    <input
+                      id="senha"
+                      type={mostrarSenha ? 'text' : 'password'}
+                      value={senha}
+                      onChange={(e) => setSenha(e.target.value)}
+                      placeholder="••••••••"
+                      autoComplete="current-password"
+                      required
+                      style={{ paddingRight: '40px' }}
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setMostrarSenha(!mostrarSenha)}
+                      style={{
+                        position: 'absolute',
+                        right: '10px',
+                        top: '50%',
+                        transform: 'translateY(-50%)',
+                        background: 'none',
+                        border: 'none',
+                        cursor: 'pointer',
+                        fontSize: '1.2rem',
+                      }}
+                      aria-label={mostrarSenha ? 'Ocultar senha' : 'Mostrar senha'}
+                    >
+                      {mostrarSenha ? '🙈' : '👁️'}
+                    </button>
+                  </div>
                 </div>
 
                 <div className="form-meta">

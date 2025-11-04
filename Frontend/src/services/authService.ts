@@ -9,6 +9,15 @@ export interface RegisterData {
   nome: string;
   email: string;
   senha: string;
+  role?: 'admin' | 'chefe' | 'operador';
+  superior_id?: number;
+}
+
+export interface UserSimplified {
+  id: number;
+  nome: string;
+  email: string;
+  role: 'admin' | 'chefe' | 'operador';
 }
 
 export interface AuthResponse {
@@ -54,6 +63,16 @@ export const authService = {
     const response = await api.post('/auth/forgot-password', null, {
       params: { email }
     });
+    return response.data;
+  },
+
+  getAllUsers: async (): Promise<UserSimplified[]> => {
+    const response = await api.get<UserSimplified[]>('/auth/users');
+    return response.data;
+  },
+
+  getSubordinates: async (): Promise<UserSimplified[]> => {
+    const response = await api.get<UserSimplified[]>('/auth/users/subordinados');
     return response.data;
   },
 };

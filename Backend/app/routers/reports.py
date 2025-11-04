@@ -107,6 +107,38 @@ def list_reports(
     return reports
 
 
+@router.get("/agenda/calendario", response_model=List[ReportListResponse])
+def get_reports_by_date(
+    mes: int = Query(..., ge=1, le=12, description="Mês (1-12)"),
+    ano: int = Query(..., ge=2000, le=2100, description="Ano"),
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    """
+    Busca relatórios agendados para um mês específico
+    """
+    from datetime import date
+    from calendar import monthrange
+    
+    # Primeiro e último dia do mês
+    primeiro_dia = date(ano, mes, 1)
+    ultimo_dia_numero = monthrange(ano, mes)[1]
+    ultimo_dia = date(ano, mes, ultimo_dia_numero)
+    
+    # Busca relatórios agendados no período
+    reports = (
+        db.query(Report)
+        .filter(
+            Report.data_agendada >= primeiro_dia,
+            Report.data_agendada <= ultimo_dia
+        )
+        .order_by(Report.data_agendada)
+        .all()
+    )
+    
+    return reports
+
+
 @router.get("/{report_id}", response_model=ReportResponse)
 def get_report(
     report_id: int,

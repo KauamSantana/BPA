@@ -1,6 +1,7 @@
 from pydantic import BaseModel, EmailStr, Field
 from datetime import datetime
 from typing import Optional
+from app.models.user import UserRole
 
 
 class UserBase(BaseModel):
@@ -12,6 +13,8 @@ class UserBase(BaseModel):
 class UserCreate(UserBase):
     """Schema para criação de usuário"""
     senha: str = Field(..., min_length=6, max_length=72)
+    role: Optional[UserRole] = UserRole.OPERADOR
+    superior_id: Optional[int] = None
 
 
 class UserLogin(BaseModel):
@@ -20,9 +23,22 @@ class UserLogin(BaseModel):
     senha: str
 
 
+class UserSimplified(BaseModel):
+    """Schema simplificado de usuário para listagem"""
+    id: int
+    nome: str
+    email: str
+    role: UserRole
+
+    class Config:
+        from_attributes = True
+
+
 class UserResponse(UserBase):
     """Schema de resposta do usuário"""
     id: int
+    role: UserRole
+    superior_id: Optional[int] = None
     criado_em: datetime
 
     class Config:

@@ -126,8 +126,143 @@
   line-height: 1.5;
 }
 
+/* Agenda / Calendário */
+.agenda-section {
+  margin-top: 3rem;
+  background: white;
+  border-radius: 12px;
+  padding: 2rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.agenda-title {
+  font-size: 1.8rem;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 1.5rem;
+  text-align: center;
+}
+
+.calendar-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  gap: 1rem;
+}
+
+.calendar-header h3 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #05A672;
+  margin: 0;
+}
+
+.calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 8px;
+}
+
+.calendar-weekday {
+  padding: 0.5rem;
+  text-align: center;
+  font-weight: 600;
+  color: #05A672;
+  background: #f0f9f6;
+  border-radius: 4px;
+}
+
+.calendar-day {
+  min-height: 100px;
+  padding: 8px;
+  border: 1px solid #e0e0e0;
+  border-radius: 6px;
+  background: white;
+  position: relative;
+  transition: all 0.2s ease;
+}
+
+.calendar-day:hover {
+  border-color: #05A672;
+  box-shadow: 0 2px 6px rgba(5, 166, 114, 0.2);
+}
+
+.calendar-day-empty {
+  background: #fafafa;
+  border: 1px solid #f0f0f0;
+}
+
+.calendar-day-today {
+  background: #f0f9f6;
+  border: 2px solid #05A672;
+}
+
+.calendar-day-has-reports {
+  background: #fffbf0;
+}
+
+.calendar-day-number {
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 4px;
+  font-size: 0.9rem;
+}
+
+.calendar-day-reports {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-top: 4px;
+}
+
+.calendar-report-item {
+  background: #05A672;
+  color: white;
+  padding: 4px 6px;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  transition: background 0.2s ease;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.calendar-report-item:hover {
+  background: #048a5f;
+}
+
+.calendar-report-icon {
+  font-size: 0.9rem;
+  flex-shrink: 0;
+}
+
+.calendar-report-text {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 @media (max-width: 768px) {
   .dashboard-grid {
     grid-template-columns: 1fr;
+  }
+
+  .calendar-grid {
+    gap: 4px;
+  }
+
+  .calendar-day {
+    min-height: 80px;
+    padding: 4px;
+  }
+
+  .calendar-report-item {
+    font-size: 0.65rem;
+    padding: 2px 4px;
   }
 }

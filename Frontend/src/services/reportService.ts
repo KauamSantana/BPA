@@ -23,6 +23,7 @@ export interface Report {
   categoria?: string;
   status: 'em_andamento' | 'concluido';
   criado_em: string;
+  data_agendada?: string;
   categorias?: ChecklistCategory[];
 }
 
@@ -31,6 +32,7 @@ export interface ReportCreate {
   cliente_id: number;
   categoria?: string;
   responsavel_inspecao_id: number;
+  data_agendada?: string;
   categorias?: Array<{
     nome: string;
     ordem: number;
@@ -86,6 +88,13 @@ export const reportService = {
 
   finalizar: async (reportId: number) => {
     const response = await api.post<Report>(`/reports/${reportId}/finalizar`);
+    return response.data;
+  },
+
+  getReportsByMonth: async (mes: number, ano: number) => {
+    const response = await api.get<Report[]>('/reports/agenda/calendario', {
+      params: { mes, ano }
+    });
     return response.data;
   },
 };

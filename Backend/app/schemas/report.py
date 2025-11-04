@@ -72,6 +72,7 @@ class ReportBase(BaseModel):
     cliente_id: int
     categoria: Optional[str] = None
     responsavel_inspecao_id: int
+    data_agendada: Optional[datetime] = None  # Data agendada para inspeção
 
 
 class ReportCreate(ReportBase):
@@ -93,6 +94,7 @@ class ReportResponse(ReportBase):
     cliente: Optional[ClienteSimplificado] = None
     criado_em: datetime
     finalizado_em: Optional[datetime] = None
+    data_agendada: Optional[datetime] = None
     categorias: List[ChecklistCategoryResponse] = []
 
     class Config:
