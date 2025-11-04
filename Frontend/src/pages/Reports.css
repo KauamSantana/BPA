@@ -159,6 +159,8 @@
     margin-bottom: var(--spacing-xl);
 }
 
+
+
 /* Responsividade */
 @media (max-width: 768px) {
     .report-card-content {

@@ -1,29 +1,77 @@
-import { useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
-import { authService } from '../services/authService';
+import { useState, useEffect } from "react";
+import { useNavigate, Link } from "react-router-dom";
+import { authService } from "../services/authService";
+import { useToast } from "../contexts/ToastContext";
 import imagemLogin from "../assets/imagem_login.png";
-import './Login.css';
-import '../index.css'
+import "./Login.css";
+import "../index.css";
 
 function Login() {
-  // Mantive “email” para não quebrar o backend, mas rotulei como “Usuário”
-  const [email, setEmail] = useState('');
-  const [senha, setSenha] = useState('');
-  const [error, setError] = useState('');
+  const [email, setEmail] = useState("");
+  const [senha, setSenha] = useState("");
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+  const { success, error: toastError } = useToast();
+
+  useEffect(() => {
+    console.log("[toast] provider ativo no Login");
+  }, []);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError('');
+    if (loading) return; // evita duplo clique
     setLoading(true);
 
+    // normaliza antes de validar/enviar
+    const emailNorm = email.trim().toLowerCase();
+    const senhaNorm = senha.trim();
+
+    if (!emailNorm) {
+      toastError("Informe o usuário!");
+      setLoading(false);
+      return;
+    }
+    if (!senhaNorm) {
+      toastError("Informe a senha!");
+      setLoading(false);
+      return;
+    }
+
     try {
-      const response = await authService.login({ email, senha });
-      localStorage.setItem('token', response.access_token);
-      navigate('/dashboard');
+      const response = await authService.login({ email: emailNorm, senha: senhaNorm });
+      localStorage.setItem("token", response.access_token);
+      success("Login realizado com sucesso!");
+      navigate("/dashboard");
     } catch (err: any) {
-      setError(err.response?.data?.detail || 'Erro ao fazer login');
+      console.warn("Erro no login:", err);
+
+      if (!err?.response) {
+        toastError("Falha de conexão. Verifique sua rede.");
+        return;
+      }
+
+      const status = err.response.status;
+      const rawDetail = err.response.data?.detail ?? "";
+      const detail = String(rawDetail).toLowerCase();
+
+      if (status === 404 || (detail.includes("não") && detail.includes("encontr"))) {
+        toastError("Usuário incorreto!");
+      } else if (status === 401 || detail.includes("senha")) {
+        toastError("Senha está incorreta!");
+      } else if (status === 400) {
+
+        if (detail.includes("Usuário é obrigatório!")) {
+          toastError("Informe o usuário!");
+        } else if (detail.includes("Senha é obrigatória!")) {
+          toastError("Informe a senha!");
+        } else {
+          toastError(typeof rawDetail === "string" ? rawDetail : "Requisição inválida (400).");
+        }
+      } else if (status === 422) {
+        toastError("Dados inválidos. Verifique usuário e senha.");
+      } else {
+        toastError("Erro ao fazer login.");
+      }
     } finally {
       setLoading(false);
     }
@@ -44,7 +92,7 @@ function Login() {
               <div className="login-intro">
                 <h2>Fazer login</h2>
               </div>
-              <div className='criar-conta'>
+              <div className="criar-conta">
                 Não possui uma conta? <Link to="/register">Crie uma.</Link>
               </div>
 
@@ -80,28 +128,25 @@ function Login() {
                   <Link to="/forgot-password">Esqueci minha senha</Link>
                 </div>
 
-                {error && <div className="login-error">{error}</div>}
-
                 <button
                   type="submit"
                   className="login-button"
                   disabled={loading}
                   aria-busy={loading}
                 >
-                  {loading ? 'Entrando...' : 'Acessar'}
+                  {loading ? "Entrando..." : "Acessar"}
                 </button>
               </form>
             </div>
           </div>
         </div>
 
-  
-
-                 <div className="photo">
-              <img src={imagemLogin}/>
-              </div>
-              </div>
-            </div>
+        {/* Coluna direita - Imagem */}
+        <div className="photo">
+          <img src={imagemLogin} alt="Login" />
+        </div>
+      </div>
+    </div>
   );
 }
 

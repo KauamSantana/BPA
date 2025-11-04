@@ -42,7 +42,7 @@
   align-items: center;
   text-align: center;
   gap: 1rem;
-  box-shadow: 0 4px 12px rgba(106, 234, 102, 0.3);
+  box-shadow: 0 4px 12px rgba(110, 110, 110, 0.3);
   transition: transform 0.2s ease;
 }
 
@@ -58,7 +58,7 @@
 
 .stat-card:hover {
   transform: translateY(-4px);
-  box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+  box-shadow: 0 6px 20px rgba(114, 114, 114, 0.4);
 }
 
 .stat-icon {

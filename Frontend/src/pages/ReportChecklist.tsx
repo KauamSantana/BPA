@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { reportService } from '../services/reportService';
-import './ReportChecklist.css'; // novo CSS separado
+import { useToast } from '../contexts/ToastContext';
+import './ReportChecklist.css';
 
 interface ChecklistItem {
   id: number;
@@ -30,107 +31,133 @@ interface Report {
 function ReportChecklist() {
   const { id } = useParams();
   const navigate = useNavigate();
+  const { success, error: toastError, info } = useToast();
+
   const [report, setReport] = useState<Report | null>(null);
   const [currentCategoryIndex, setCurrentCategoryIndex] = useState(0);
   const [showObservationModal, setShowObservationModal] = useState(false);
   const [selectedItem, setSelectedItem] = useState<ChecklistItem | null>(null);
   const [observationText, setObservationText] = useState('');
+  const [showFinishModal, setShowFinishModal] = useState(false);
+  const [finishing, setFinishing] = useState(false);
+  const [exporting, setExporting] = useState(false);
 
   useEffect(() => {
     loadReport();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id]);
 
-  const loadReport = async () => {
+  async function loadReport() {
     try {
       const data = await reportService.getById(Number(id));
       setReport(data);
-    } catch (error) {
-      console.error('Erro ao carregar relatório:', error);
+      if (data?.categorias && currentCategoryIndex >= data.categorias.length) {
+        setCurrentCategoryIndex(0);
+      }
+    } catch (err) {
+      console.error('Erro ao carregar relatório:', err);
+      toastError('Não foi possível carregar o relatório.');
     }
-  };
+  }
 
-  const handleResponseChange = async (itemId: number, resposta: 'conforme' | 'nao_conforme' | 'na') => {
+  async function handleResponseChange(itemId: number, resposta: 'conforme' | 'nao_conforme' | 'na') {
     try {
       await reportService.updateChecklistItem(itemId, { resposta });
       setReport((prev) => {
-        if (!prev || !prev.categorias) return prev;
-        const newCategorias = prev.categorias.map((cat) => ({
+        if (!prev?.categorias) return prev;
+        const categorias = prev.categorias.map((cat) => ({
           ...cat,
-          itens: cat.itens.map((item) =>
-            item.id === itemId ? { ...item, resposta } : item
-          ),
+          itens: cat.itens.map((it) => (it.id === itemId ? { ...it, resposta } : it)),
         }));
-        return { ...prev, categorias: newCategorias };
+        return { ...prev, categorias };
       });
-    } catch (error) {
-      console.error('Erro ao atualizar item:', error);
+    } catch (err) {
+      console.error('Erro ao atualizar item:', err);
+      toastError('Erro ao atualizar o item do checklist.');
     }
-  };
+  }
 
-  const openObservationModal = (item: ChecklistItem) => {
+  function openObservationModal(item: ChecklistItem) {
     setSelectedItem(item);
     setObservationText(item.observacoes || '');
     setShowObservationModal(true);
-  };
+  }
 
-  const saveObservation = async () => {
+  async function saveObservation() {
     if (!selectedItem) return;
     try {
-      await reportService.updateChecklistItem(selectedItem.id, {
-        observacoes: observationText,
-      });
+      await reportService.updateChecklistItem(selectedItem.id, { observacoes: observationText });
       setReport((prev) => {
-        if (!prev || !prev.categorias) return prev;
-        const newCategorias = prev.categorias.map((cat) => ({
+        if (!prev?.categorias) return prev;
+        const categorias = prev.categorias.map((cat) => ({
           ...cat,
-          itens: cat.itens.map((item) =>
-            item.id === selectedItem.id ? { ...item, observacoes: observationText } : item
+          itens: cat.itens.map((it) =>
+            it.id === selectedItem.id ? { ...it, observacoes: observationText } : it
           ),
         }));
-        return { ...prev, categorias: newCategorias };
+        return { ...prev, categorias };
       });
       setShowObservationModal(false);
-    } catch (error) {
-      console.error('Erro ao salvar observação:', error);
+      success('Observação salva!');
+    } catch (err) {
+      console.error('Erro ao salvar observação:', err);
+      toastError('Erro ao salvar observação.');
     }
-  };
+  }
 
-  const nextCategory = () => {
-    if (report && report.categorias && currentCategoryIndex < report.categorias.length - 1) {
-      setCurrentCategoryIndex(currentCategoryIndex + 1);
+  function nextCategory() {
+    if (report?.categorias && currentCategoryIndex < report.categorias.length - 1) {
+      setCurrentCategoryIndex((i) => i + 1);
+    } else {
+      info('Você já está na última categoria.');
     }
-  };
+  }
 
-  const prevCategory = () => {
+  function prevCategory() {
     if (currentCategoryIndex > 0) {
-      setCurrentCategoryIndex(currentCategoryIndex - 1);
+      setCurrentCategoryIndex((i) => i - 1);
+    } else {
+      info('Você já está na primeira categoria.');
     }
-  };
+  }
 
-  const finishReport = async () => {
-    if (!confirm('Deseja finalizar este relatório? Após finalizado, não poderá mais ser editado.')) return;
-
+  // ✅ Finalização com redirecionamento automático
+  async function doFinishReport() {
+    if (!report || finishing) return;
     try {
-      await reportService.finalizar(Number(id));
-      alert('Relatório finalizado com sucesso!');
-      loadReport();
-    } catch (error) {
-      alert('Erro ao finalizar relatório');
-      console.error('Erro ao finalizar relatório:', error);
+      setFinishing(true);
+      await reportService.finalizar(report.id);
+      setShowFinishModal(false);
+      success('Relatório finalizado com sucesso!');
+      navigate('/reports'); // 🔁 redireciona para a lista
+    } catch (err) {
+      console.error('Erro ao finalizar relatório:', err);
+      toastError('Erro ao finalizar relatório.');
+    } finally {
+      setFinishing(false);
     }
-  };
+  }
 
-  const handleExportPDF = async () => {
+  async function handleExportPDF() {
+    if (!report) return;
     try {
-      await reportService.exportPDF(Number(id));
-    } catch (error) {
-      alert('Erro ao exportar PDF');
-      console.error('Erro ao exportar PDF:', error);
+      setExporting(true);
+      await reportService.exportPDF(report.id);
+      success('PDF gerado com sucesso!');
+    } catch (err) {
+      console.error('Erro ao exportar PDF:', err);
+      toastError('Erro ao exportar PDF.');
+    } finally {
+      setExporting(false);
     }
-  };
+  }
 
   if (!report || !report.categorias || report.categorias.length === 0) {
-    return <div className="report-page"><div className="report-container">Carregando...</div></div>;
+    return (
+      <div className="report-page">
+        <div className="report-container">Carregando...</div>
+      </div>
+    );
   }
 
   const currentCategory = report.categorias[currentCategoryIndex];
@@ -147,12 +174,12 @@ function ReportChecklist() {
 
           <div className="report-actions">
             {!isFinalized && (
-              <button onClick={finishReport} className="btn btn-success">
+              <button onClick={() => setShowFinishModal(true)} className="btn btn-success">
                 ✅ Finalizar Relatório
               </button>
             )}
-            <button onClick={handleExportPDF} className="btn btn-primary">
-              📥 Exportar PDF
+            <button onClick={handleExportPDF} className="btn btn-primary" disabled={exporting}>
+              {exporting ? 'Gerando...' : '📥 Exportar PDF'}
             </button>
           </div>
         </div>
@@ -171,9 +198,25 @@ function ReportChecklist() {
         </div>
 
         <div className="report-category-nav">
-          <button onClick={prevCategory} disabled={currentCategoryIndex === 0}>← Anterior</button>
-          <h3>{currentCategory.nome} ({currentCategoryIndex + 1}/{totalCategories})</h3>
-          <button onClick={nextCategory} disabled={currentCategoryIndex === totalCategories - 1}>Próxima →</button>
+          <button
+            onClick={prevCategory}
+            disabled={currentCategoryIndex === 0}
+            className="btn btn-secondary"
+          >
+            ← Anterior
+          </button>
+
+          <h3 style={{ margin: 0 }}>
+            {currentCategory.nome} ({currentCategoryIndex + 1}/{totalCategories})
+          </h3>
+
+          <button
+            onClick={nextCategory}
+            disabled={currentCategoryIndex === totalCategories - 1}
+            className="btn btn-primary"
+          >
+            Próxima →
+          </button>
         </div>
 
         <div>
@@ -215,6 +258,7 @@ function ReportChecklist() {
           ))}
         </div>
 
+        {/* Modal de Observação */}
         {showObservationModal && (
           <div className="modal-overlay" onClick={() => setShowObservationModal(false)}>
             <div className="modal-content fade-in" onClick={(e) => e.stopPropagation()}>
@@ -233,6 +277,23 @@ function ReportChecklist() {
             </div>
           </div>
         )}
+
+        {/* Modal de Finalização */}
+        {showFinishModal && (
+          <div className="modal-overlay" onClick={() => setShowFinishModal(false)}>
+            <div className="modal-content fade-in" onClick={(e) => e.stopPropagation()}>
+              <h3>Finalizar relatório</h3>
+              <p>Após finalizado, o relatório não poderá mais ser editado.</p>
+              <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '10px', marginTop: '10px' }}>
+                <button onClick={() => setShowFinishModal(false)} className="btn btn-secondary">Cancelar</button>
+                <button onClick={doFinishReport} className="btn btn-success" disabled={finishing}>
+                  {finishing ? 'Finalizando...' : 'Finalizar'}
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
       </div>
     </div>
   );

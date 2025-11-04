@@ -1,161 +1,169 @@
 /* src/pages/ReportForm.css */
 
-/* Utiliza a estrutura base de ClientForm.css */
+/* Layout geral */
 .report-form-page {
-    /* Define o layout principal da página */
-    display: flex;
-    flex-direction: column;
-    padding: var(--spacing-lg); /* 1.5rem */
-    background-color: var(--bg-gray);
-    min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  padding: var(--spacing-lg);
+  background-color: var(--bg-gray);
+  min-height: 100vh;
 }
 
-/* Estilo para o container principal do formulário */
+/* Cartão do formulário */
 .report-form-container {
-    background-color: white;
-    padding: var(--spacing-xl); /* 2rem */
-    border-radius: var(--radius-lg); /* 0.75rem */
-    box-shadow: var(--shadow-lg); /* Sombra mais destacada */
-    max-width: 800px; /* Limita a largura para centralizar melhor */
-    width: 100%;
-    margin: var(--spacing-xl) auto; /* Centraliza vertical e horizontalmente */
+  background-color: #fff;
+  padding: var(--spacing-xl);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
+  max-width: 800px;
+  width: 100%;
+  margin: var(--spacing-xl) auto;
 }
 
-/* Título e Botão Voltar */
+/* ===== Cabeçalho ===== */
 .report-form-header {
-    margin-bottom: var(--spacing-lg);
-    display: flex;
-    flex-direction: column;
-    gap: var(--spacing-md);
+  display: flex;                       /* em linha */
+  align-items: center;
+  justify-content: space-between;      /* botão à esquerda, título à direita */
+  gap: var(--spacing-md);
+  margin-bottom: var(--spacing-lg);
 }
 
-.report-form-header-link {
-    display: flex;
-    align-items: center;
-    gap: var(--spacing-sm);
-    color: var(--primary-purple);
-    font-size: var(--font-size-lg);
-    font-weight: 500;
-    text-decoration: none;
-    transition: color 0.2s ease;
-}
-
-.report-form-header-link:hover {
-    color: var(--secondary-purple);
-}
-
+/* título */
 .report-form-header h1 {
-    font-size: var(--font-size-2xl); /* 1.5rem */
-    color: var(--text-dark);
+  margin: 0;
+  font-size: var(--font-size-2xl);
+  color: var(--text-dark);
+  line-height: 1.2;
 }
 
-/* Estilização dos grupos de input */
+/* botão "Voltar para Relatórios" no padrão dos outros */
+.btn-back{
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: .4rem;
+  padding: .5rem 1rem;                 /* mesmo respiro do restante */
+  font-weight: 600;
+  font-size: .95rem;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-gray);
+  background: var(--gray-100);
+  color: var(--text-dark);
+  transition: background-color .2s ease, box-shadow .2s ease;
+}
+.btn-back:hover{
+  background: var(--gray-200);
+  box-shadow: var(--shadow-sm);
+}
+
+/* ===== Inputs ===== */
 .input-group {
-    display: flex;
-    flex-direction: column;
-    margin-bottom: var(--spacing-lg); /* Espaçamento entre os grupos */
+  display: flex;
+  flex-direction: column;
+  margin-bottom: var(--spacing-lg);
 }
 
 .input-group label {
-    font-weight: 600;
-    margin-bottom: var(--spacing-xs);
-    font-size: var(--font-size-sm);
-    color: var(--text-dark);
+  font-weight: 600;
+  margin-bottom: var(--spacing-xs);
+  font-size: var(--font-size-sm);
+  color: var(--text-dark);
 }
 
-/* Ajusta o grid para 2 colunas */
+/* grid de duas colunas */
 .form-grid-2 {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: var(--spacing-lg);
-    margin-bottom: var(--spacing-lg);
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--spacing-lg);
+  margin-bottom: var(--spacing-lg);
 }
 
-/* Campos de input, select e textarea */
+/* campos */
 .input-group input[type="text"],
 .input-group select,
 .input-group textarea {
-    padding: var(--spacing-sm); /* 0.5rem */
-    border: 1px solid var(--border-gray);
-    border-radius: var(--radius-md);
-    font-size: var(--font-size-base);
-    transition: border-color 0.2s ease, box-shadow 0.2s ease;
-    width: 100%; /* Garante que ocupem 100% da coluna do grid */
+  width: 100%;
+  padding: var(--spacing-sm);
+  border: 1px solid var(--border-gray);
+  border-radius: var(--radius-md);
+  font-size: var(--font-size-base);
+  transition: border-color .2s ease, box-shadow .2s ease;
 }
 
 .input-group input[type="text"]:focus,
 .input-group select:focus,
 .input-group textarea:focus {
-    border-color: var(--primary-purple);
-    outline: none;
-    box-shadow: 0 0 0 3px rgba(123, 104, 184, 0.2); /* Sombra suave do roxo */
+  border-color: var(--primary-purple);
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(123, 104, 184, 0.2);
 }
 
-/* Estilização dos botões de ação */
+/* ===== Ações ===== */
 .form-actions {
-    display: flex;
-    justify-content: flex-end; /* Alinha os botões à direita */
-    gap: var(--spacing-md);
-    margin-top: var(--spacing-xl);
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--spacing-md);
+  margin-top: var(--spacing-xl);
 }
 
 .btn {
-    padding: var(--spacing-sm) var(--spacing-lg); /* 0.5rem 1.5rem */
-    border-radius: var(--radius-md);
-    font-weight: 600;
-    cursor: pointer;
-    transition: opacity 0.2s ease, background-color 0.2s ease;
-    border: none;
+  padding: var(--spacing-sm) var(--spacing-lg);
+  border-radius: var(--radius-md);
+  font-weight: 600;
+  cursor: pointer;
+  border: none;
+  transition: opacity .2s ease, background-color .2s ease, box-shadow .2s ease;
 }
 
 .btn:disabled {
-    opacity: 0.6;
-    cursor: not-allowed;
+  opacity: .6;
+  cursor: not-allowed;
 }
 
-/* Botão INICIAR (Success) */
+/* success */
 .btn-success {
-    background-color: var(--success-color);
-    color: white;
+  background-color: var(--success-color);
+  color: #fff;
 }
-
 .btn-success:hover:not(:disabled) {
-    background-color: #21964c; /* Tom mais escuro */
+  background-color: #21964c;
+  box-shadow: var(--shadow-sm);
 }
 
-/* Botão VOLTAR (Secondary) */
+/* secondary */
 .btn-secondary {
-    background-color: var(--gray-100);
-    color: var(--text-dark);
-    border: 1px solid var(--border-gray);
+  background-color: var(--gray-100);
+  color: var(--text-dark);
+  border: 1px solid var(--border-gray);
 }
-
 .btn-secondary:hover:not(:disabled) {
-    background-color: var(--gray-200);
+  background-color: var(--gray-200);
+  box-shadow: var(--shadow-sm);
 }
 
-/* Mensagem de erro */
+/* erro */
 .error-message {
-    color: var(--danger-color);
-    margin-bottom: var(--spacing-md);
-    text-align: right;
+  color: var(--danger-color);
+  margin-bottom: var(--spacing-md);
+  text-align: right;
 }
 
-/* Responsividade */
+/* ===== Responsivo ===== */
 @media (max-width: 600px) {
-    .report-form-container {
-        padding: var(--spacing-lg);
-    }
+  .report-form-container { padding: var(--spacing-lg); }
 
-    .form-grid-2 {
-        grid-template-columns: 1fr;
-    }
+  .report-form-header {
+    flex-direction: column;            /* empilha no mobile */
+    align-items: stretch;
+    gap: var(--spacing-sm);
+  }
 
-    .form-actions {
-        flex-direction: column-reverse; /* Inverte a ordem para 'INICIAR' ficar por último */
-    }
+  .form-grid-2 { grid-template-columns: 1fr; }
 
-    .btn {
-        width: 100%;
-    }
+  .form-actions {
+    flex-direction: column-reverse;
+  }
+
+  .btn { width: 100%; }
 }

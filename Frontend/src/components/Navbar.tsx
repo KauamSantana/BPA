@@ -24,10 +24,9 @@ function Navbar() {
       <div className="navbar-container">
         <div className="navbar-brand">
           <div className='navbar-icon'>
-          <img src={logoBPA} alt="Logo BPA" />
+          <img onClick={() => navigate('/dashboard')} src={logoBPA} alt="Logo BPA" />
           
         </div>
-        <h1>BPA Digital</h1>
         </div>
 
         <div className="navbar-menu">

@@ -38,10 +38,21 @@
 }
 
 .report-status {
-  padding: 0.5rem 1rem;
-  border-radius: var(--radius-full);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: .35rem;            /* pequeno espaço entre ícone e texto */
+  padding: 0.2rem 0.6rem; /* reduz altura e largura do fundo */
+  min-width: 100px;       /* mais compacto */
+  height: 26px;           /* altura mais fina */
+  border-radius: 9999px;  /* formato de pílula */
   font-weight: 600;
-  font-size: var(--font-size-sm);
+  font-size: 0.83rem;     /* ligeiramente menor */
+  line-height: 1;         /* texto centralizado verticalmente */
+  box-shadow: var(--shadow-sm);
+  border: 1px solid transparent;
+  vertical-align: middle; /* garante centralização visual */
+  margin-top: 30px; /* move o selo para baixo */
 }
 
 .report-status.in-progress {

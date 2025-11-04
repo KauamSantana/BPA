@@ -1,28 +1,39 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { authService } from '../services/authService';
+import { useToast } from '../contexts/ToastContext';
 import './Login.css';
-import imagemLogin from '../assets/imagem_login.png'
+import imagemLogin from '../assets/imagem_login.png';
 
 function ForgotPassword() {
   const [email, setEmail] = useState('');
-  const [message, setMessage] = useState('');
-  const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
-  const [success, setSuccess] = useState(false);
+  const { success, error: toastError } = useToast();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError('');
-    setMessage('');
-    setLoading(true);
 
+    // validação simples no front
+    const trimmed = email.trim();
+    if (!trimmed) {
+      toastError('Informe o e-mail!');
+      return;
+    }
+    // regex simples para e-mail
+    if (!/\S+@\S+\.\S+/.test(trimmed)) {
+      toastError('E-mail inválido.');
+      return;
+    }
+
+    setLoading(true);
     try {
-      const response = await authService.forgotPassword(email);
-      setMessage(response.message);
-      setSuccess(true);
+      const response = await authService.forgotPassword(trimmed);
+      // backend costuma retornar { message: '...' }
+      const msg = response?.message || 'Se existir uma conta, você receberá instruções no e-mail informado.';
+      success(msg);
     } catch (err: any) {
-      setError(err.response?.data?.detail || 'Erro ao processar solicitação');
+      const detail = err?.response?.data?.detail || 'Erro ao processar solicitação';
+      toastError(detail);
     } finally {
       setLoading(false);
     }
@@ -30,11 +41,12 @@ function ForgotPassword() {
 
   return (
     <div className="login-page">
-        <div style={{ textAlign: 'center', marginTop: '1rem' }}>
-                    <Link to="/login" style={{ color: '#05A672', textDecoration: 'none', padding: 26}}>
-                      ← Voltar para Login
-                    </Link>
-                  </div>
+      <div style={{ textAlign: 'center', marginTop: '1rem' }}>
+        <Link to="/login" style={{ color: '#05A672', textDecoration: 'none', padding: 26 }}>
+          ← Voltar para Login
+        </Link>
+      </div>
+
       <div className="login-shell">
         <div className="login-left">
           <div className="login-panel">
@@ -49,57 +61,47 @@ function ForgotPassword() {
               </div>
               <div>
                 <p style={{ color: '#666', marginTop: '0.5rem' }}>
-                  Digite seu email para receber instruções de recuperação
+                  Digite seu e-mail para receber instruções de recuperação
                 </p>
               </div>
 
-              {success ? (
-                <div className="success-message">
-                  <div style={{ fontSize: '3rem', marginBottom: '1rem' }}></div>
-                  <p style={{ marginBottom: '1.5rem' }}>{message}</p>
-                  <Link to="/login" className="login-button" style={{ textDecoration: 'none', display: 'block', textAlign: 'center', justifyContent: 'center' }}>
-                    Voltar para Login
-                  </Link>
+              <form onSubmit={handleSubmit} className="login-form" noValidate>
+                <div className="input-group">
+                  <label htmlFor="email">E-mail</label>
+                  <input
+                    id="email"
+                    type="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    placeholder="seu@email.com"
+                    autoComplete="email"
+                  />
                 </div>
-              ) : (
-                <form onSubmit={handleSubmit} className="login-form">
-                  <div className="input-group">
-                    <label htmlFor="email">Email</label>
-                    <input
-                      id="email"
-                      type="email"
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
-                      placeholder="seu@email.com"
-                      required
-                    />
-                  </div>
 
-                  {error && <div className="login-error">{error}</div>}
-                  {message && !success && <div className="login-info">{message}</div>}
+                <button
+                  type="submit"
+                  className="login-button"
+                  disabled={loading}
+                  aria-busy={loading}
+                >
+                  {loading ? 'Enviando...' : 'Enviar Instruções'}
+                </button>
 
-                  <button
-                    type="submit"
-                    className="login-button"
-                    disabled={loading}
-                  >
-                    {loading ? 'Enviando...' : 'Enviar Instruções'}
-                  </button>
-
-                
-                </form>
-              )}
+                <div style={{ marginTop: 12, textAlign: 'center' }}>
+                  <small style={{ color: '#6b7280' }}>
+                    Se o e-mail estiver cadastrado, você receberá um link de redefinição.
+                  </small>
+                </div>
+              </form>
             </div>
           </div>
         </div>
 
-        
-                  <div className="photo">
-              <img src={imagemLogin}/>
-              </div>
-            </div>
-          </div>
-    
+        <div className="photo">
+          <img src={imagemLogin} alt="Login" />
+        </div>
+      </div>
+    </div>
   );
 }
 

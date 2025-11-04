@@ -20,33 +20,45 @@
     margin: var(--spacing-xl) auto; /* Centraliza vertical e horizontalmente */
 }
 
-/* Título e Botão Voltar */
-.client-form-header {
-    margin-bottom: var(--spacing-lg);
+ .client-form-header {
     display: flex;
     flex-direction: column;
     gap: var(--spacing-md);
 }
 
 .client-form-header-link {
-    display: flex;
-    align-items: center;
-    gap: var(--spacing-sm);
-    color: var(--primary-purple);
-    font-size: var(--font-size-lg);
-    font-weight: 500;
-    text-decoration: none;
-    transition: color 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  background: transparent;         
+  border: none;                    
+  padding: 0;                      
+  cursor: pointer;
+  color: var(--text-dark);
+  font: inherit;                   
+  appearance: none;
+  -webkit-appearance: none;
+}
+
+.client-form-header-link:focus {
+  outline: none;
+  box-shadow: none;
 }
 
 .client-form-header-link:hover {
-    color: var(--secondary-purple);
+  opacity: .8;                      /* feedback sutil */
+}
+
+.client-form-header-link img {
+  width: 28px;
+  height: 28px;
+  display: block;                   /* evita “respiro” extra */
 }
 
 .client-form-header h1 {
     font-size: var(--font-size-2xl); /* 1.5rem */
     color: var(--text-dark);
-}
+} 
 
 /* Estilo para a seção de upload da Logo */
 .logo-upload-section {
