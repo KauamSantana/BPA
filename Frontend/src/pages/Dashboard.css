@@ -232,6 +232,20 @@
   text-overflow: ellipsis;
 }
 
+.calendar-report-item.report-andamento {
+  background: #ffa500;
+  border-left: 3px solid #ff8c00;
+}
+
+.calendar-report-item.report-andamento:hover {
+  background: #ff8c00;
+}
+
+.calendar-report-item.report-concluido {
+  background: #05A672;
+  border-left: 3px solid #048a5f;
+}
+
 .calendar-report-item:hover {
   background: #048a5f;
 }

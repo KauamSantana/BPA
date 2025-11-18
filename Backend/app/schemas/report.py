@@ -109,6 +109,8 @@ class ReportListResponse(BaseModel):
     cliente: Optional[ClienteSimplificado] = None
     status: ReportStatus
     criado_em: datetime
+    data_agendada: Optional[datetime] = None
+    criado_em: datetime
 
     class Config:
         from_attributes = True

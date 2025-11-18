@@ -208,11 +208,11 @@ function Dashboard() {
                       {dayReports.map(report => (
                         <div 
                           key={report.id} 
-                          className="calendar-report-item"
-                          onClick={() => navigate(`/reports/${report.id}/checklist`)}
-                          title={`${report.descricao} - ${report.cliente?.nome_fantasia || 'Cliente não especificado'}`}
+                          className={`calendar-report-item ${report.status === 'concluido' ? 'report-concluido' : 'report-andamento'}`}
+                          onClick={() => navigate(`/reports/checklist/${report.id}`)}
+                          title={`${report.descricao} - ${report.cliente?.nome_fantasia || 'Cliente não especificado'} - ${report.status === 'concluido' ? 'Concluído' : 'Em Andamento'}`}
                         >
-                          <span className="calendar-report-icon">📋</span>
+                          <span className="calendar-report-icon">{report.status === 'concluido' ? '✅' : '⏳'}</span>
                           <span className="calendar-report-text">{report.descricao}</span>
                         </div>
                       ))}

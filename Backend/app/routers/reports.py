@@ -117,20 +117,15 @@ def get_reports_by_date(
     """
     Busca relatórios agendados para um mês específico
     """
-    from datetime import date
-    from calendar import monthrange
+    from sqlalchemy import extract
     
-    # Primeiro e último dia do mês
-    primeiro_dia = date(ano, mes, 1)
-    ultimo_dia_numero = monthrange(ano, mes)[1]
-    ultimo_dia = date(ano, mes, ultimo_dia_numero)
-    
-    # Busca relatórios agendados no período
+    # Busca relatórios pela data agendada
     reports = (
         db.query(Report)
+        .options(joinedload(Report.cliente))
         .filter(
-            Report.data_agendada >= primeiro_dia,
-            Report.data_agendada <= ultimo_dia
+            extract('month', Report.data_agendada) == mes,
+            extract('year', Report.data_agendada) == ano
         )
         .order_by(Report.data_agendada)
         .all()
