@@ -23,6 +23,14 @@ class UserLogin(BaseModel):
     senha: str
 
 
+class UserUpdate(BaseModel):
+    """Schema para atualização de dados do usuário"""
+    nome: Optional[str] = Field(None, min_length=3, max_length=255)
+    email: Optional[EmailStr] = None
+    senha_atual: Optional[str] = None
+    senha_nova: Optional[str] = Field(None, min_length=6, max_length=72)
+
+
 class UserSimplified(BaseModel):
     """Schema simplificado de usuário para listagem"""
     id: int

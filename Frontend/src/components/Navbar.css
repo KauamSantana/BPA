@@ -81,6 +81,12 @@
   font-weight: 500;
 }
 
+.navbar-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
 .navbar-logout {
   padding: 0.5rem 1rem;
   background: #fff;

@@ -50,9 +50,18 @@ function Navbar() {
           </button>
         </div>
 
-        <button className="navbar-logout" onClick={handleLogout}>
-           <img src={logoutIcon} alt="Logout"></img> Logout
-        </button>
+        <div className="navbar-actions">
+          <button
+            className={`navbar-item ${isActive('/profile') ? 'active' : ''}`}
+            onClick={() => navigate('/profile')}
+            title="Meu Perfil"
+          >
+            👤 Perfil
+          </button>
+          <button className="navbar-logout" onClick={handleLogout}>
+            <img src={logoutIcon} alt="Logout"></img> Logout
+          </button>
+        </div>
       </div>
     </nav>
   );

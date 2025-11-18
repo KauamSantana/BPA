@@ -5,9 +5,10 @@ from sqlalchemy.orm import Session
 
 from app.database import get_db
 from app.models import User
-from app.schemas import UserCreate, UserResponse, UserLogin, Token, UserSimplified
+from app.schemas import UserCreate, UserResponse, UserLogin, UserUpdate, Token, UserSimplified
 from app.auth import (
     get_password_hash,
+    verify_password,
     authenticate_user,
     create_access_token,
     ACCESS_TOKEN_EXPIRE_MINUTES,
@@ -128,6 +129,57 @@ def get_current_user_info(current_user: User = Depends(get_current_user)):
     """
     Retorna informações do usuário logado
     """
+    return current_user
+
+
+@router.put("/me", response_model=UserResponse)
+def update_current_user(
+    user_data: UserUpdate,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    """
+    Atualiza informações do usuário logado
+    """
+    # Se está tentando trocar a senha
+    if user_data.senha_nova:
+        if not user_data.senha_atual:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Senha atual é obrigatória para trocar a senha"
+            )
+        
+        # Verifica se a senha atual está correta
+        if not verify_password(user_data.senha_atual, current_user.senha_hash):
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Senha atual incorreta"
+            )
+        
+        # Atualiza a senha
+        current_user.senha_hash = get_password_hash(user_data.senha_nova)
+    
+    # Se está tentando trocar o email
+    if user_data.email and user_data.email != current_user.email:
+        # Verifica se o email já existe
+        existing_user = db.query(User).filter(
+            User.email == user_data.email,
+            User.id != current_user.id
+        ).first()
+        if existing_user:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Email já está em uso"
+            )
+        current_user.email = user_data.email
+    
+    # Atualiza o nome se fornecido
+    if user_data.nome:
+        current_user.nome = user_data.nome
+    
+    db.commit()
+    db.refresh(current_user)
+    
     return current_user
 
 

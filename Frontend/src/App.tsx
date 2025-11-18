@@ -8,6 +8,7 @@ import ClientForm from './pages/ClientForm';
 import Reports from './pages/Reports';
 import ReportForm from './pages/ReportForm';
 import ReportChecklist from './pages/ReportChecklist';
+import Profile from './pages/Profile';
 
 function App() {
   const isAuthenticated = () => {
@@ -124,6 +125,15 @@ function App() {
           element={
             <PrivateRoute>
               <ReportChecklist />
+            </PrivateRoute>
+          }
+        />
+        
+        <Route
+          path="/profile"
+          element={
+            <PrivateRoute>
+              <Profile />
             </PrivateRoute>
           }
         />
