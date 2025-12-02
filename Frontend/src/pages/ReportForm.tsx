@@ -55,6 +55,18 @@ function ReportForm() {
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>
   ) {
     const { name, value } = e.target;
+    
+    // Limitar o ano a 4 dígitos no campo data_agendada
+    if (name === 'data_agendada' && value) {
+      const parts = value.split('-');
+      if (parts.length >= 1 && parts[0].length > 4) {
+        parts[0] = parts[0].substring(0, 4);
+        const limitedValue = parts.join('-');
+        setFormData((prev) => ({ ...prev, [name]: limitedValue }));
+        return;
+      }
+    }
+    
     setFormData((prev) => ({ ...prev, [name]: value }));
   }
 
@@ -350,6 +362,7 @@ function ReportForm() {
                 value={formData.data_agendada}
                 onChange={handleChange}
                 placeholder="Selecione data e hora"
+                max="9999-12-31T23:59"
               />
             </div>
           </div>

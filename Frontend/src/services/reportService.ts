@@ -61,11 +61,16 @@ export const reportService = {
     return response.data;
   },
 
+  update: async (id: number, data: Partial<ReportCreate>) => {
+    const response = await api.put<Report>(`/reports/${id}`, data);
+    return response.data;
+  },
+
   delete: async (id: number) => {
     await api.delete(`/reports/${id}`);
   },
 
-  updateChecklistItem: async (itemId: number, data: { resposta?: 'conforme' | 'nao_conforme' | 'na'; observacoes?: string }) => {
+  updateChecklistItem: async (itemId: number, data: { resposta?: 'conforme' | 'nao_conforme' | 'na' | null; observacoes?: string }) => {
     const response = await api.put(`/reports/items/${itemId}`, data);
     return response.data;
   },

@@ -25,6 +25,7 @@ interface Report {
   cliente?: { nome_fantasia: string };
   categoria?: string;
   status: 'em_andamento' | 'concluido';
+  data_agendada?: string;
   categorias?: ChecklistCategory[];
 }
 
@@ -41,6 +42,12 @@ function ReportChecklist() {
   const [showFinishModal, setShowFinishModal] = useState(false);
   const [finishing, setFinishing] = useState(false);
   const [exporting, setExporting] = useState(false);
+  const [showEditModal, setShowEditModal] = useState(false);
+  const [editFormData, setEditFormData] = useState({
+    descricao: '',
+    categoria: '',
+    data_agendada: ''
+  });
 
   useEffect(() => {
     loadReport();
@@ -62,12 +69,19 @@ function ReportChecklist() {
 
   async function handleResponseChange(itemId: number, resposta: 'conforme' | 'nao_conforme' | 'na') {
     try {
-      await reportService.updateChecklistItem(itemId, { resposta });
+      // Permite desmarcar clicando na mesma opção
+      const currentItem = report?.categorias
+        ?.flatMap(cat => cat.itens)
+        .find(it => it.id === itemId);
+      
+      const newResposta = currentItem?.resposta === resposta ? null : resposta;
+      
+      await reportService.updateChecklistItem(itemId, { resposta: newResposta });
       setReport((prev) => {
         if (!prev?.categorias) return prev;
         const categorias = prev.categorias.map((cat) => ({
           ...cat,
-          itens: cat.itens.map((it) => (it.id === itemId ? { ...it, resposta } : it)),
+          itens: cat.itens.map((it) => (it.id === itemId ? { ...it, resposta: newResposta } : it)),
         }));
         return { ...prev, categorias };
       });
@@ -152,6 +166,41 @@ function ReportChecklist() {
     }
   }
 
+  function formatDateTime(dateString?: string) {
+    if (!dateString) return 'Não agendada';
+    const date = new Date(dateString);
+    return date.toLocaleString('pt-BR', {
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit'
+    });
+  }
+
+  function openEditModal() {
+    if (!report) return;
+    setEditFormData({
+      descricao: report.descricao || '',
+      categoria: report.categoria || '',
+      data_agendada: report.data_agendada || ''
+    });
+    setShowEditModal(true);
+  }
+
+  async function handleSaveEdit() {
+    if (!report) return;
+    try {
+      const updated = await reportService.update(report.id, editFormData);
+      setReport(updated); // Usa os dados retornados pelo servidor
+      setShowEditModal(false);
+      success('Relatório atualizado com sucesso!');
+    } catch (err) {
+      console.error('Erro ao atualizar relatório:', err);
+      toastError('Erro ao atualizar relatório.');
+    }
+  }
+
   if (!report || !report.categorias || report.categorias.length === 0) {
     return (
       <div className="report-page">
@@ -174,9 +223,14 @@ function ReportChecklist() {
 
           <div className="report-actions">
             {!isFinalized && (
-              <button onClick={() => setShowFinishModal(true)} className="btn btn-success">
-                ✅ Finalizar Relatório
-              </button>
+              <>
+                <button onClick={openEditModal} className="btn btn-primary" style={{ marginRight: '10px' }}>
+                  ✏️ Editar Relatório
+                </button>
+                <button onClick={() => setShowFinishModal(true)} className="btn btn-success">
+                  ✅ Finalizar Relatório
+                </button>
+              </>
             )}
             <button onClick={handleExportPDF} className="btn btn-primary" disabled={exporting}>
               {exporting ? 'Gerando...' : '📥 Exportar PDF'}
@@ -190,6 +244,7 @@ function ReportChecklist() {
               <h2>{report.descricao}</h2>
               <p><strong>Cliente:</strong> {report.cliente?.nome_fantasia || 'N/A'}</p>
               <p><strong>Categoria:</strong> {report.categoria || 'N/A'}</p>
+              <p><strong>Data Agendada:</strong> {formatDateTime(report.data_agendada)}</p>
             </div>
             <span className={`report-status ${isFinalized ? 'completed' : 'in-progress'}`}>
               {isFinalized ? '✓ Concluído' : '⏱ Em Andamento'}
@@ -289,6 +344,52 @@ function ReportChecklist() {
                 <button onClick={doFinishReport} className="btn btn-success" disabled={finishing}>
                   {finishing ? 'Finalizando...' : 'Finalizar'}
                 </button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Modal de Edição do Relatório */}
+        {showEditModal && (
+          <div className="modal-overlay" onClick={() => setShowEditModal(false)}>
+            <div className="modal-content fade-in" onClick={(e) => e.stopPropagation()} style={{ maxWidth: '600px' }}>
+              <h3>Editar Relatório</h3>
+              <div style={{ marginTop: '20px' }}>
+                <div className="input-group" style={{ marginBottom: '15px' }}>
+                  <label htmlFor="edit-descricao">Descrição: *</label>
+                  <textarea
+                    id="edit-descricao"
+                    value={editFormData.descricao}
+                    onChange={(e) => setEditFormData({ ...editFormData, descricao: e.target.value })}
+                    rows={3}
+                    style={{ width: '100%', padding: '8px', borderRadius: '4px', border: '1px solid #ccc' }}
+                  />
+                </div>
+                <div className="input-group" style={{ marginBottom: '15px' }}>
+                  <label htmlFor="edit-categoria">Categoria:</label>
+                  <input
+                    id="edit-categoria"
+                    type="text"
+                    value={editFormData.categoria}
+                    onChange={(e) => setEditFormData({ ...editFormData, categoria: e.target.value })}
+                    style={{ width: '100%', padding: '8px', borderRadius: '4px', border: '1px solid #ccc' }}
+                  />
+                </div>
+                <div className="input-group" style={{ marginBottom: '15px' }}>
+                  <label htmlFor="edit-data">Data Agendada:</label>
+                  <input
+                    id="edit-data"
+                    type="datetime-local"
+                    value={editFormData.data_agendada}
+                    onChange={(e) => setEditFormData({ ...editFormData, data_agendada: e.target.value })}
+                    max="9999-12-31T23:59"
+                    style={{ width: '100%', padding: '8px', borderRadius: '4px', border: '1px solid #ccc' }}
+                  />
+                </div>
+              </div>
+              <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '10px', marginTop: '20px' }}>
+                <button onClick={() => setShowEditModal(false)} className="btn btn-secondary">Cancelar</button>
+                <button onClick={handleSaveEdit} className="btn btn-success">Salvar Alterações</button>
               </div>
             </div>
           </div>

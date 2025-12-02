@@ -17,6 +17,10 @@ function Dashboard() {
   const [currentMonth, setCurrentMonth] = useState(new Date().getMonth() + 1); // 1-12
   const [currentYear, setCurrentYear] = useState(new Date().getFullYear());
   const [scheduledReports, setScheduledReports] = useState<Report[]>([]);
+  const [startDateFilter, setStartDateFilter] = useState('');
+  const [endDateFilter, setEndDateFilter] = useState('');
+  const [selectedDayReports, setSelectedDayReports] = useState<Report[] | null>(null);
+  const [selectedDay, setSelectedDay] = useState<number | null>(null);
   const { error } = useToast(); // <- removido success
 
   useEffect(() => {
@@ -57,13 +61,55 @@ function Dashboard() {
   };
 
   const getReportsForDay = (day: number) => {
-    return scheduledReports.filter(report => {
+    let reportsToFilter = scheduledReports;
+    
+    // Aplica filtro de data apenas se houver filtros ativos
+    if (startDateFilter || endDateFilter) {
+      reportsToFilter = scheduledReports.filter(report => {
+        if (!report.data_agendada) return false;
+        const reportDate = new Date(report.data_agendada);
+        
+        if (startDateFilter) {
+          const startDate = new Date(startDateFilter);
+          startDate.setHours(0, 0, 0, 0);
+          if (reportDate < startDate) return false;
+        }
+        if (endDateFilter) {
+          const endDate = new Date(endDateFilter);
+          endDate.setHours(23, 59, 59, 999);
+          if (reportDate > endDate) return false;
+        }
+        
+        return true;
+      });
+    }
+    
+    // Filtra relatórios do dia específico
+    return reportsToFilter.filter(report => {
       if (!report.data_agendada) return false;
       const reportDate = new Date(report.data_agendada);
       return reportDate.getDate() === day && 
              reportDate.getMonth() + 1 === currentMonth && 
              reportDate.getFullYear() === currentYear;
     });
+  };
+
+  const formatTime = (dateString: string) => {
+    const date = new Date(dateString);
+    return date.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+  };
+
+  const handleDayClick = (day: number) => {
+    const reports = getReportsForDay(day);
+    if (reports.length > 0) {
+      setSelectedDay(day);
+      setSelectedDayReports(reports);
+    }
+  };
+
+  const closeDayModal = () => {
+    setSelectedDayReports(null);
+    setSelectedDay(null);
   };
 
   const changeMonth = (delta: number) => {
@@ -169,6 +215,42 @@ function Dashboard() {
         <div className="agenda-section">
           <h2 className="agenda-title">Agenda</h2>
           
+          {/* Filtros de Data */}
+          <div className="calendar-filters" style={{ marginBottom: '20px', display: 'flex', gap: '15px', alignItems: 'center' }}>
+            <div>
+              <label htmlFor="startDate" style={{ marginRight: '8px', fontWeight: '500' }}>Data Início:</label>
+              <input
+                id="startDate"
+                type="date"
+                value={startDateFilter}
+                onChange={(e) => setStartDateFilter(e.target.value)}
+                style={{ padding: '8px', borderRadius: '4px', border: '1px solid #ccc' }}
+              />
+            </div>
+            <div>
+              <label htmlFor="endDate" style={{ marginRight: '8px', fontWeight: '500' }}>Data Fim:</label>
+              <input
+                id="endDate"
+                type="date"
+                value={endDateFilter}
+                onChange={(e) => setEndDateFilter(e.target.value)}
+                style={{ padding: '8px', borderRadius: '4px', border: '1px solid #ccc' }}
+              />
+            </div>
+            {(startDateFilter || endDateFilter) && (
+              <button
+                onClick={() => {
+                  setStartDateFilter('');
+                  setEndDateFilter('');
+                }}
+                className="btn btn-secondary"
+                style={{ padding: '8px 16px' }}
+              >
+                Limpar Filtros
+              </button>
+            )}
+          </div>
+          
           <div className="calendar-header">
             <button onClick={() => changeMonth(-1)} className="btn btn-secondary">
               ← Anterior
@@ -201,6 +283,8 @@ function Dashboard() {
                 <div 
                   key={day} 
                   className={`calendar-day ${isToday ? 'calendar-day-today' : ''} ${dayReports.length > 0 ? 'calendar-day-has-reports' : ''}`}
+                  onClick={() => handleDayClick(day)}
+                  style={{ cursor: dayReports.length > 0 ? 'pointer' : 'default' }}
                 >
                   <div className="calendar-day-number">{day}</div>
                   {dayReports.length > 0 && (
@@ -209,11 +293,17 @@ function Dashboard() {
                         <div 
                           key={report.id} 
                           className={`calendar-report-item ${report.status === 'concluido' ? 'report-concluido' : 'report-andamento'}`}
-                          onClick={() => navigate(`/reports/checklist/${report.id}`)}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            navigate(`/reports/checklist/${report.id}`);
+                          }}
                           title={`${report.descricao} - ${report.cliente?.nome_fantasia || 'Cliente não especificado'} - ${report.status === 'concluido' ? 'Concluído' : 'Em Andamento'}`}
                         >
-                          <span className="calendar-report-icon">{report.status === 'concluido' ? '✅' : '⏳'}</span>
-                          <span className="calendar-report-text">{report.descricao}</span>
+                          <span className="calendar-report-icon">{report.status === 'concluido' ? '✅' : '📋'}</span>
+                          <span className="calendar-report-text">
+                            {report.data_agendada && `${formatTime(report.data_agendada)} - `}
+                            {report.descricao}
+                          </span>
                         </div>
                       ))}
                     </div>
@@ -224,6 +314,50 @@ function Dashboard() {
           </div>
         </div>
       </div>
+
+      {/* Modal de Detalhes do Dia */}
+      {selectedDayReports && selectedDay && (
+        <div className="modal-overlay" onClick={closeDayModal}>
+          <div className="modal-content fade-in" onClick={(e) => e.stopPropagation()} style={{ maxWidth: '600px', maxHeight: '80vh', overflowY: 'auto' }}>
+            <h3>Relatórios do dia {selectedDay} de {monthNames[currentMonth - 1]}</h3>
+            <div style={{ marginTop: '20px' }}>
+              {selectedDayReports.map(report => (
+                <div 
+                  key={report.id} 
+                  style={{ 
+                    padding: '15px', 
+                    marginBottom: '10px', 
+                    border: '1px solid #ddd', 
+                    borderRadius: '8px',
+                    backgroundColor: report.status === 'concluido' ? '#e8f5e9' : '#fff3e0',
+                    cursor: 'pointer'
+                  }}
+                  onClick={() => {
+                    closeDayModal();
+                    navigate(`/reports/checklist/${report.id}`);
+                  }}
+                >
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '8px' }}>
+                    <span style={{ fontSize: '1.5rem' }}>{report.status === 'concluido' ? '✅' : '📋'}</span>
+                    <h4 style={{ margin: 0 }}>{report.descricao}</h4>
+                  </div>
+                  <p style={{ margin: '5px 0' }}><strong>Cliente:</strong> {report.cliente?.nome_fantasia || 'N/A'}</p>
+                  <p style={{ margin: '5px 0' }}><strong>Categoria:</strong> {report.categoria || 'N/A'}</p>
+                  <p style={{ margin: '5px 0' }}>
+                    <strong>Horário:</strong> {report.data_agendada ? formatTime(report.data_agendada) : 'N/A'}
+                  </p>
+                  <p style={{ margin: '5px 0' }}>
+                    <strong>Status:</strong> {report.status === 'concluido' ? 'Concluído' : 'Em Andamento'}
+                  </p>
+                </div>
+              ))}
+            </div>
+            <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '20px' }}>
+              <button onClick={closeDayModal} className="btn btn-secondary">Fechar</button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

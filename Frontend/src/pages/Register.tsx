@@ -138,10 +138,24 @@ function Register() {
                   border: 'none',
                   cursor: 'pointer',
                   fontSize: '1.2rem',
+                  display: 'flex',
+                  alignItems: 'center',
+                  padding: '4px',
                 }}
                 aria-label={mostrarSenha ? 'Ocultar senha' : 'Mostrar senha'}
               >
-                {mostrarSenha ? '🙈' : '👁️'}
+                {mostrarSenha ? (
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                    <circle cx="12" cy="12" r="3"></circle>
+                    <line x1="1" y1="1" x2="23" y2="23"></line>
+                  </svg>
+                ) : (
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                    <circle cx="12" cy="12" r="3"></circle>
+                  </svg>
+                )}
               </button>
             </div>
           </div>
@@ -170,10 +184,24 @@ function Register() {
                   border: 'none',
                   cursor: 'pointer',
                   fontSize: '1.2rem',
+                  display: 'flex',
+                  alignItems: 'center',
+                  padding: '4px',
                 }}
                 aria-label={mostrarConfirmarSenha ? 'Ocultar senha' : 'Mostrar senha'}
               >
-                {mostrarConfirmarSenha ? '🙈' : '👁️'}
+                {mostrarConfirmarSenha ? (
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                    <circle cx="12" cy="12" r="3"></circle>
+                    <line x1="1" y1="1" x2="23" y2="23"></line>
+                  </svg>
+                ) : (
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                    <circle cx="12" cy="12" r="3"></circle>
+                  </svg>
+                )}
               </button>
             </div>
           </div>

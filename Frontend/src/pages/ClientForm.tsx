@@ -108,6 +108,15 @@ function ClientForm() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
+    
+    // Validação customizada de email em português
+    const emailInput = document.getElementById('email') as HTMLInputElement;
+    if (emailInput && emailInput.value && !emailInput.validity.valid) {
+      toastError('Por favor, insira um endereço de e-mail válido (ex: usuario@exemplo.com)');
+      emailInput.focus();
+      return;
+    }
+    
     setLoading(true);
 
     try {
